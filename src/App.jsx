@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import * as THREE from 'three';
-
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import space from './assets/space.jpg';
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
   const scene = new THREE.Scene();
 
   // Create a camera, set position 
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 1,1000);
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,100);
   camera.position.z = 2;
   
   // Create  renderer
@@ -18,7 +18,13 @@ function App() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
   
-  
+  // Orbit controls
+  const orbit = new OrbitControls(camera, renderer.domElement);
+  const axeshelper = new THREE.AxesHelper(5);
+  scene.add(axeshelper);
+  camera.position.set(-10, -10, 5);
+  orbit.update();
+
   // Create a geometry
   const geometry = new THREE.SphereGeometry(1, 32, 16);
   const material = new THREE.MeshStandardMaterial({color: 0xff0000, flatShading: true});
@@ -36,8 +42,12 @@ function App() {
     space,
     space,
   ] ); */
-
-  renderer.render(scene, camera);
+  
+  function animate() {
+    renderer.render(scene, camera);
+  }
+  renderer.setAnimationLoop(animate);
+  
 })
   return (
     <div className="App">
