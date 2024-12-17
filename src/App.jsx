@@ -38,7 +38,7 @@ function App() {
   const orbit = new OrbitControls(camera, renderer.domElement);
   const axeshelper = new THREE.AxesHelper(10);
   scene.add(axeshelper);
-  camera.position.set(25, 10, 10);
+  camera.position.set(-40, 35, -20);
   orbit.update();
 
   // Effects composer
@@ -71,20 +71,16 @@ function App() {
   const sun = new THREE.Mesh(sunGeo, sunMat);
   scene.add(sun);
   
-  // const obj = new THREE.Object3D();
-  // obj.castShadow = true;
-  // obj.receiveShadow = true;
-  // scene.add(obj);
-
+  // Planets
   function makePlanet(radius, position, texture){
     const planetGeo = new THREE.SphereGeometry(radius, 32, 16);
     const planetMat = new THREE.MeshStandardMaterial({ map: textLoader.load(texture)});
     const planet = new THREE.Mesh(planetGeo, planetMat);
     planet.position.set(0, 0, position);
-    //obj.add(planet);
-    planet.receiveShadow = true;
-    scene.add(planet);
-    return planet
+    const obj = new THREE.Object3D();
+    obj.add(planet);
+    scene.add(obj);
+    return {planet, obj};
   }
 
   const mercury = makePlanet(0.35, 14.7, mercuryTexture);
@@ -97,12 +93,11 @@ function App() {
   const neptune = makePlanet(1.5, 70, neptuneTexture);
 
   // Lights
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.05);
+  scene.add(ambientLight);
 
-  const pointLight = new THREE.PointLight(0xffffff,800, 300);
+  const pointLight = new THREE.PointLight(0xffffff,1000, 300);
   pointLight.position.set(0, 0, 0);
-  // pointLight.castShadow = true;
-  const pointLightHelper = new THREE.PointLightHelper(pointLight);
-  scene.add(pointLightHelper);
   scene.add(pointLight);
 
   //background
@@ -119,16 +114,23 @@ function App() {
 
   function animate() {
     sun.rotateY(0.0005);
-    mercury.rotateY(0.005);
-    mercury.rotation
-    venus.rotateY(0.004);
-    earth.rotateY(0.003);
-    mars.rotateY(0.002);
-    jupiter.rotateY(0.001);
-    saturn.rotateY(0.0005);
-    uranus.rotateY(0.0003);
-    neptune.rotateY(0.0002);
+    mercury.planet.rotateY(0.005);
+    venus.planet.rotateY(0.004);
+    earth.planet.rotateY(0.003);
+    mars.planet.rotateY(0.002);
+    jupiter.planet.rotateY(0.001);
+    saturn.planet.rotateY(0.0005);
+    uranus.planet.rotateY(0.0003);
+    neptune.planet.rotateY(0.0002);
 
+    mercury.obj.rotateY(0.009);
+    venus.obj.rotateY(0.007);
+    earth.obj.rotateY(0.005);
+    mars.obj.rotateY(0.0025);
+    jupiter.obj.rotateY(0.0005);
+    saturn.obj.rotateY(0.00016);
+    uranus.obj.rotateY(0.00008);
+    neptune.obj.rotateY(0.00003);
     //renderer.render(scene, camera);
     composer.render();
   }
